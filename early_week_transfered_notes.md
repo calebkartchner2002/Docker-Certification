@@ -6,7 +6,7 @@ Software first produced and started gaining traction in 2013
 Composed of three main components: Image, Registry, Container (Build, Ship, Run)
 Any Cloud Native Computing Foundation (CNCF) software utilizes the Build, Ship, Run framework. This includes Helm, kubernetes, etc.
 Build: A `DockerFile` is created to define the outline of an image to be built. Details of this structure will be defined later but essentially this file will define the layers of the image to be built which includes only the absolute needed dependencies to run. No OS, which means these can be run universally on any system. Use `Docker build [location_of_dockerfile]`
-Registry: Is the Universal app distribution. Every major platform (github, docker registry, bitbucket, etc has their own versions of this. Docker images can be identified by a unique hash that ties in all of their specific layers ensuring that finding the same hash on two systems means they are the same base image. 
+Registry: Is the Universal app distribution. Every major platform (github, docker registry, bitbucket, etc) has their own versions of this. Docker images can be identified by a unique hash that ties in all of their specific layers ensuring that finding the same hash on two systems means they are the same base image. 
 Container: As a baseline you need a docker engine downloaded onto your OS (can be any). Images are downloaded into your local docker registry. Running the container which is built of an image creates your software application. This application gets its own process list, IP address, file system, etc. You can run two containers of the same image, they will be completely unique and isolated from one another.
 
 Registered account through Dockerhub: https://hub.docker.com/ 
@@ -56,21 +56,6 @@ Containers are just processes that run on the local operating system, distinctly
 
 Containers generally run off linux operating systems however microsoft made containers compatible in 2016. There is no sign that macOS will make container compatible with its kernel. Microsoft containers never caught on and are generally a pain to use with low support. Stick with Linux.
 
-
-
-
-
-
-
-
-
-
-
-
-
-Week 1: CS5950 Docker Certificate Studying
-Docker Mastery: with Kubernetes +Swarm from a Docker Captain
-Section 4 - Creating and Using Containers
 docs.docker.com contains lots of useful information. After poking around, I have noticed there is a lot of support with new AI models, being able to spin them up open source editions very easily as well as easy API integration for subscription based AI.
 I ran multiple docker containers together on various ports and ran various environment commands to interact with the containers. Do specify forwarding of host machine port to container port you do `8080:8080` (host_port:container_port).
 I completed a quiz on docker container commands.
