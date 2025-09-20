@@ -38,4 +38,11 @@
     ```
 
 ## File Permissions Across Multiple Containers
-- The Linux Kernel only cares about IDs, which are attached to each file and directory in the file system itself, and those IDs are the same no matter which process accesses them.
+- The Linux Kernel only cares about IDs, which are attached to each file and directory in the file system itself. However when a container access mounted or volume files it can label the folders or files differently. But the underlying ID and file should be the same. 
+- to trouble shoot permissions in docker containers you can run `ps aux`. each process listed needs a matching user ID or group ID to access files.
+- Sometimes the best solution is to create a new user in one Dockerfile and setting the startup user with USER. (USER docs)[https://docs.docker.com/engine/reference/builder/#user]
+- When setting a Dockerfile's USER, use numbers, which work better in Kubernetes than using names.
+- if `ps` doesn't exist in you container, you can always install it: `apt-get update && apt-get install procps`
+
+## Assignemnt: Edit code running in containers with bind mounts
+
