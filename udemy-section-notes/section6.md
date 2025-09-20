@@ -45,4 +45,5 @@
 - if `ps` doesn't exist in you container, you can always install it: `apt-get update && apt-get install procps`
 
 ## Assignemnt: Edit code running in containers with bind mounts
-
+- The main premise will be to use bind mounts to add developing capabilities to you web server without actually changing anything on the host.
+- Succesfully ran the server using a volume and changed the file dynamically, seeing the containerized website change in real time
