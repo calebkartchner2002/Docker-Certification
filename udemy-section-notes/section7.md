@@ -49,4 +49,7 @@ CMD ["python", "main.py"]
 - exec form runs command as PID 1 whereas shell form does a `/bin/bash -c (PID 1) | ->your command`.
 - In Exec form, all earlier set `ENV` statements can be accessed in `CMD`.
 
+## Assignment: Create CLI Utilities
+
+
 
