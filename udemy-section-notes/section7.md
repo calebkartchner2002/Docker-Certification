@@ -60,6 +60,5 @@ create cmatrix and apache bench containers
 - Showcased on Entrypoint can be used for main programs and customized settings for container while CMD is used for default commands that run but can be overriden by user.
 
 ## Assignment: Startup Scripts
-
-
-
+- Entrypoint practice: showcasing: `exec "$@"`.
+- Built a fastapi server 
