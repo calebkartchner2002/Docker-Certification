@@ -24,7 +24,7 @@
 ## Postgres Container
 - remember that postgres requires a password when starting the container unless you specify that it doesnt need it: `POSTGRES_HOST_AUTH_METHOD=trust` or set the password `POSTGRES_PASSWORD=mypasswd`
 
-## Assignment: Named Volumes
+## Assignment 1 (assignment 1 for new notes): Named Volumes
 - The goal of this assignment is to learn how to read up on images in docker hub to find where containers expect volumes to be placed. Using a volume as a database makes so that updating to a new version such as postgres allows you to keep the same schemas while keeping your software up to date.
 - Here is the code I ran:
     ```bash
@@ -44,6 +44,6 @@
 - When setting a Dockerfile's USER, use numbers, which work better in Kubernetes than using names.
 - if `ps` doesn't exist in you container, you can always install it: `apt-get update && apt-get install procps`
 
-## Assignemnt: Edit code running in containers with bind mounts
+## Assignemnt 2: Edit code running in containers with bind mounts
 - The main premise will be to use bind mounts to add developing capabilities to you web server without actually changing anything on the host.
 - Succesfully ran the server using a volume and changed the file dynamically, seeing the containerized website change in real time

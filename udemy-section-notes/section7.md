@@ -49,7 +49,7 @@ CMD ["python", "main.py"]
 - exec form runs command as PID 1 whereas shell form does a `/bin/bash -c (PID 1) | ->your command`.
 - In Exec form, all earlier set `ENV` statements can be accessed in `CMD`.
 
-## Assignment: Create CLI Utilities
+## Assignment 3: Create CLI Utilities
 create cmatrix and apache bench containers
 - apache bench used apt package library which is a little longer and uses the following format:
     1. update the db cache, 
@@ -59,6 +59,6 @@ create cmatrix and apache bench containers
 - cmatrix used apk (alpine package keeper). This is much faster and simpler to use.
 - Showcased on Entrypoint can be used for main programs and customized settings for container while CMD is used for default commands that run but can be overriden by user.
 
-## Assignment: Startup Scripts
+## Assignment 4: Startup Scripts
 - Entrypoint practice: showcasing: `exec "$@"`.
 - Built a fastapi server 
