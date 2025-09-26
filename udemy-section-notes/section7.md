@@ -50,6 +50,16 @@ CMD ["python", "main.py"]
 - In Exec form, all earlier set `ENV` statements can be accessed in `CMD`.
 
 ## Assignment: Create CLI Utilities
+create cmatrix and apache bench containers
+- apache bench used apt package library which is a little longer and uses the following format:
+    1. update the db cache, 
+    2. install packages, 
+    3. cleanup the cache files.
+    4. `apt-get update && apt-get install -y <list-of-packages> && rm -rf /var/lib/apt/lists/*`
+- cmatrix used apk (alpine package keeper). This is much faster and simpler to use.
+- Showcased on Entrypoint can be used for main programs and customized settings for container while CMD is used for default commands that run but can be overriden by user.
+
+## Assignment: Startup Scripts
 
 
 
