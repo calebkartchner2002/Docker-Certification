@@ -1,8 +1,8 @@
-version: "2"
+version: "3.1"
 
 services:
   drupal-server:
-    image: drupal:9
+    image: drupal:8.2
     ports:
       - "8080:80"
     volumes:
@@ -13,10 +13,20 @@ services:
   postgres:
     image: postgres:14
     environment:
-      - POSTGRES_PASSWORD=whysecrect
+      - POSTGRES_PASSWORD=/run/secrets/psql-pw
+    volumes:
+      - drupal-data:/var/lib/postgresql/data
+    secrets:
+      - psql-pw
 
 volumes:
+  drupal-data:
   drupal-modules:
   drupal-profiles:
   drupal-sites:
   drupal-themes:
+
+secrets:
+  psql-pw:
+    external: true
+      
