@@ -1,0 +1,29 @@
+# Section 13: Docker in Production
+- You don't need CI/CD, Dynamic performance scaling, Containerizing everything, persistent data right away when deploying docker to production.
+- Legacy apps can work in containers well: often just small changes to hardcoded enviorment variables need to be changed
+- Dockerfile Maturity Model (dev to prod)
+    - Make it start
+    - Make it log all thinkgs to stdout/stderr
+    - make it documented in file
+    - make it work for others
+    - make it lean (like use ubuntu first then switch to alpine)
+    - make it scale
+- mount logs to volumes, then you can see errors after containers go down
+- Always hard code versions, using `latest` will cause confusion and frustration as it doesn't mean latest now, just latest when you last pulled. This also goes for apt-get and any dependencies.
+- If you need to copy in enviorment config at image build time, use a Single Dockerfile with default ENV's and overwrite per-eviorment with ENTRYPOINT script.
+- Docker is very kernel and storage and driver dependent, make sure to use popular kernels that are well tested with docker
+- Even if you application is simple and only runs off of one node, use Swarm as it provides a lot of helpful production features
+- Swarm allows for multiple OS architecture
+- Pure open source self-hosted tech stack:
+    - HW / OS: Infraskit or Terraform
+    - Runtime: Docker
+    - Orchestration: Docker Swarm
+    - Networking: Docker Swarm
+    - Storage: REX-Ray
+    - CI/CD: Jenkins
+    - Registry: Docker Distrubution + Portus
+    - Layer 7 Proxy: Flow-proxy or Traefik
+    - Central Logging: ELK
+    - Central Monitoring: Prometheus + Grafana
+    - Swarm GUI: Portainer
+
