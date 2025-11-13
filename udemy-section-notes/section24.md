@@ -48,4 +48,27 @@
 - If integrated into CI/CD pipeline, make sure to allow `--continue-on-failure` (audit mode), otherwise everything will fail during development
 
 ## Sysdig Falco, Content Trust, Custom Seccomp and AppArmor Profiles
-- 
+- Sysdig Falco essentialy takes a common list of suspect behaviors and logs these actions
+    - comes with default list but can be added to.
+- Content Trust is set of tools that docker mostly provides to make sure everything in your pipeline gets certified throughout the process to run on your machine
+    - Allows you to specifically assign what can be run on your system
+- AppArmor, SELinux, Seccomp and Linux capabilities are enabled by default on docker but can be configured to harden images even further. This is good to know for systems that are very important to lock down
+
+## Docker Rootless Mode
+- Allows you to run the docker deamon without root but you cannot use virtual networking (this requires root)
+- there is a script provided by docker that configures a container to be run by the user: https://get.docker.com/rootless
+
+- Windows is entirely different in terms of security. Most tools don't support windows containers
+
+## Distroless Images
+- There is no base package system, no apt or yum
+- Most programs need these dependencies and shared libraries liked openssl
+- golang, C can build single binaries that have everything they need to run and would be able to run distroless (no layers)
+- Very difficult to use and troubleshoot as you cannot exec into the container or use most maintenance techniques
+- can be seen as safer as many tools that can be used in an exploit are not available to the hacker, but can be less safe due to most security mechanisms not being able to suppor this mode
+
+## Docker Secrets
+- Your application has to have secrets somewhere and will not be encrypted in memory
+- if someone has `root` access to a container they will be a able to access secrets
+- Secrets are set in a file in RAM which have permissions that you set
+- Kubernetes and Swarm encrypt secrests on Disk but are readable in memory and RAM. Already more secure that legacy applications, not a perfect solution.
