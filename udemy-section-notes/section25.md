@@ -72,4 +72,20 @@ docker context create --docker "host=tcp://IP:2376" my-remote
 - rootless containers can only mount files or directories that your user can access
 
 ## Docker Desktop Enterprise
-- 
+- options:
+    - DDC is the free community version.
+    - DDE is the paid enterprise version. Includes version packs, locked settings, and application designer
+- admins can preconfigure & lock CPU, memory, proxy, and daemon settings
+- ensures consistent setups across all developer machines.
+- Application Designer
+    - GUI to create apps from enterprise-defined templates
+    - templates include Dockerfiles, compose files, code, env vars, configs
+    - stored in registry (DTR for example) and updated centrally
+    - automatically scaffolds and starts multi-container apps using compose
+
+## Docker Desktop Enterprise Clusters
+- is a CLI plugin (`docker cluster`) for creating and managing full server clusters
+- successor of docker certified infrastructure
+- provides lifecycle management for clusters. EX: `create, upgrade, scale, backup, delete`
+- one YAML file defines your entire cluster
+- is a feature commonly supported among big cloud providers
