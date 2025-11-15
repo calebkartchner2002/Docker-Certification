@@ -1,1 +1,19 @@
 #  Section 27: Node.js Docker Images & Dockerfile
+- Do not use `node:latest` or full `node:<version>` as these are very large images and have a very high CVE counts
+- try to use even numbered (which are long term supported) with `slim` or `bullseye-slim` tags for fewer vulnerabilities
+- avoid `Alpine` for Node apps:
+    - use `gilbc` which is a more standardized library used by ubuntu and debina. `musl` library has much weaker node support
+    - APK version pinning is unreliable
+    - recurring real-world production issues
+- use `.dockerignore` to exclude `.git/` and `node_modules/` as a minimum
+- install dependencies with:
+    - `npm ci --only=production` can be used to install exact versions from `package-lock.json`. only install production dependencies
+- run in non root (`USER node`) and `chown` copied files if needed
+- Use `tini` as PID 1 (ENTRYPOINT)
+    - Node tends to mishandle shutting down when given PID 1
+    - Node doesnt handle orphaned child processes well when given PID 1
+- multi stage Dockerfiles should be used:
+    - base: runtime and prod deps only
+    - dev stage: adds dev deps + nodemon
+    - test stage: runs lints/tests against same built layers
+    - final prod stage: copy from source stage so shipped image has all tested components
