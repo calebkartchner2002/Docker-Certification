@@ -28,4 +28,20 @@ Link to offical study Guide: https://training.mirantis.com/certification/dca-cer
 - Manager is the host running the control plane
 - Controller is part of the manager that enforces desired state
 - Raft is a distributed key-value store that holds the entire cluster state of the Swarm.
-- 
+    - All managers must agree before state changes (EX: create service)
+    - One manager becomes the leader; others follow.
+    - A majority of managers must be available to make decisions.
+    - If a manager goes offline, cluster state is preserved as long as quorum remains.
+- if a leader node dies, the managers vote for a node with the latest committed entires to become leader. This way the leader has the most updated True of the RAFT state
+- all parts of the control plane are run from the Docker daemon: Raft store, orchestrator, Scheduler, Dispatcher, Allocator, Certificates subsystem (mutual TLS), API router
+- Kubernetes is implemented using contaienrs such as a seperate API server container, seperate scheduler container, seperate controller-manager container
+
+- secrets are encrypted in RAFT, configs are not
+- Worker nodes that request a secret will decrypt RAM where it will be stored. 
+- secrets ensure nothing is encrypted on disk, only ever on a worker node in memory
+
+- `tmpfs` Lives only in memory, Disappears when the container stops, cannot persist and is best for sensitive data or very high I/O: `--mount type=tmpfs,target=/run/cache`
+- Bind mounts do not automatically work in Swarm as The container could be scheduled on ANY node and that directory might not exist.
+- Volumes are given a random name if not directly speciefied. difficult to reuse
+- Volume = WHAT you're storing
+- Volume Driver is how and where it's stored
