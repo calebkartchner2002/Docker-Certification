@@ -45,3 +45,18 @@ Link to offical study Guide: https://training.mirantis.com/certification/dca-cer
 - Volumes are given a random name if not directly speciefied. difficult to reuse
 - Volume = WHAT you're storing
 - Volume Driver is how and where it's stored
+
+- A `macvlan network` is where every container is assigned a mac address, similar to how a physical network works where each container would be a device on the network.
+- `Host network` is where the docker network is the host's network, no seperation layer, no need to `--publish` ports.
+
+- In dockerfiles:
+- `ARG` is NOT available at runtime, it only exists during the image build.
+- `ENV` persists into the running container, controls
+- only these instructions create layers: `FROM`, `RUN`, `COPY`, `ADD`
+-  Multi-stage builds let you use one image to build your application and a different, smaller image to run it. This drastically reduces final image sizes.
+- Generally you should use `COPY` as it is simple and predictable. 
+- ADD is for:
+    - Extracting tar archives
+    - Downloading URLs (downloading URLs is discouraged)
+- `.dockerignore` dramatically speeds builds. You can reduce context size, build time and cache invalidation risk
+A
