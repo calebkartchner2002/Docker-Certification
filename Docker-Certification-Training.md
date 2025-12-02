@@ -79,4 +79,5 @@ Link to offical study Guide: https://training.mirantis.com/certification/dca-cer
 - Notary provides signing for docker content.
     - docker content trust (DCT) uses Notary on the backend to verify and assign signatures
     - `DOCKER_CONTENT_TRUST=1` will require docker to verify signatures for pull and push, verify metadata via Notary server and allow storing of signing keys under `~/.docker/trust`
+    - DCT relies on Root Key and Repository Key
 - 
