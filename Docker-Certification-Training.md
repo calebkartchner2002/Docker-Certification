@@ -59,4 +59,17 @@ Link to offical study Guide: https://training.mirantis.com/certification/dca-cer
     - Extracting tar archives
     - Downloading URLs (downloading URLs is discouraged)
 - `.dockerignore` dramatically speeds builds. You can reduce context size, build time and cache invalidation risk
-A
+
+
+## Things that I have been struggling with
+- you can ensure session stickiness in docker swarm/compose/service by enabling `--publish mode=host,published=8080,target=80`. `host` mode makes so that a client will always connect to the same node IP and turns off routing mesh and load balancing
+- Node availablity states:
+    - `drain`: no tasks allowed. existing tasks get rescheduled to other nodes
+    - `pause`: No new tasks but exisiting ones stay
+    - `active`: can run tasks
+    - command: `docker node update --availability drain NODE_NAME`
+- Dependent startup in Docker Compose
+    - `depends_on` tells docker compose in what order to start containers
+    - healthcheck is the actual test the container has to pass to show its actual readiness
+- multi-stage builds reduce image size by seperating build and runtime steps. For example runing NPM install during build process and then only coping the built files for the actual runtime image. 
+- 
