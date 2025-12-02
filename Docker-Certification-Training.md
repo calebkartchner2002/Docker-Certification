@@ -72,4 +72,11 @@ Link to offical study Guide: https://training.mirantis.com/certification/dca-cer
     - `depends_on` tells docker compose in what order to start containers
     - healthcheck is the actual test the container has to pass to show its actual readiness
 - multi-stage builds reduce image size by seperating build and runtime steps. For example runing NPM install during build process and then only coping the built files for the actual runtime image. 
+- DTR (Docker Trusted Registry)
+    - is park of Docker Enterprise, not community docker, enterprise version of Docker Hub
+    - UCP (universal control plane): sits on top of docker engine like kubernetes control plane
+    - DTR has multiple nodes for high availability: replication, shared storage, load balancing
+- Notary provides signing for docker content.
+    - docker content trust (DCT) uses Notary on the backend to verify and assign signatures
+    - `DOCKER_CONTENT_TRUST=1` will require docker to verify signatures for pull and push, verify metadata via Notary server and allow storing of signing keys under `~/.docker/trust`
 - 
