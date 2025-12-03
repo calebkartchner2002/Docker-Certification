@@ -80,4 +80,44 @@ Link to offical study Guide: https://training.mirantis.com/certification/dca-cer
     - docker content trust (DCT) uses Notary on the backend to verify and assign signatures
     - `DOCKER_CONTENT_TRUST=1` will require docker to verify signatures for pull and push, verify metadata via Notary server and allow storing of signing keys under `~/.docker/trust`
     - DCT relies on Root Key and Repository Key
-- 
+- LDAP (Lightweight Directory Access Protocol)
+    - a protocol to query and manage users in a directory
+    - just a directory, does not provide RBAC, policies, roles, etc
+- Active Directory is Microsoft enterprise LDAP system, essentially combines all athentication features
+    - Stores users (using LDAP internally)
+    - Authenticates users (Kerberos)
+    - Authorizes users (groups)
+    - Manages domain-wide security and policy
+- SAML (Security Assertion Markup Language)
+    - SAML is a protocol for Single Sign-On (SSO)
+
+- `--endpoint-mode dnsrr`: this disables VIP per service and returns each task IP address directly via DNS
+- The TCP/IP stack is the networking subsystem inside the operating system that handles pretty much all networking (all machines have one): opening ports, sending/receiving packets, establishing TCP connections, handling timeouts (retries), NAT, firewall rules, routing packets 
+- iptables rules is the linux firewall: NAT, port forwarding, packet filtering, connection routing, DNAT (destination NAT) for Docker published ports
+    - Docker automatically sets iptables rules
+- reverse proxy: a service that accepts incoming client requests and forward them to backend services. EX: swarm ingress is a reverse proxy on every node
+- IPVS (IP Virtual Server): It is a Layer 4 load balancer built into the Linux kernel
+    - Docker Swarm uses IPVS to implement service VIPs
+- DNS TTL = Domain Network Service Time to Live
+- During VIP mode (default in swarm), when a TCP connection is made, state is stored in client and server kernels.
+    - When a node dies using VIP, the task's TCP session state disappears with the node. once swarm removes the downed node from the backend IPVS, a new TCP connection will be made.
+- Masquerading Rule: iptables rule that rewrites container src IP → host IP:
+- NAT translates container’s private IP → host IP.
+- volumes are stored in `/var/lib/docker/volumes`
+- `seccomp` by default blocks syscalls. This includes low-level perf monitoring and kernel module loads.
+- containers drop root capabilities by default: 
+    - `NET_ADMIN` which is needed for network interfaces
+    - `SYS_ADMIN` is pretty much root on host, very dangerous
+    - `SYS_PTRACE` meant for debugging
+    - done using `--cap-add=NET_ADMIN` or `--cap-drop=ALL`
+- `docker login` writes credentials to `~/.docker/config.json`
+- Update a service:
+```sh
+docker service update \
+  --image myimage:v2 \
+  --update-delay 10s \
+  --update-parallelism 2 \
+  myservice
+```
+- rollback an update: `docker service update --rollback myservice`
+
