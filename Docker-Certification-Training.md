@@ -121,3 +121,29 @@ docker service update \
 ```
 - rollback an update: `docker service update --rollback myservice`
 
+- A multi-stage build lets you use multiple `FROM` blocks in a single Dockerfile. Each `FROM` starts a completely new build environment:
+```sh
+FROM golang:1.22 AS builder`
+WORKDIR /src
+COPY . .
+RUN go build -o app
+FROM alpine:3.20
+COPY --from=builder /src/app /app
+```
+- `docker system prune` removes: stopped containers, networks not used, build cache
+    - adding `-a` removes all unused images (not just dangling)
+    - `docker container prune` only removes stoped containers
+    - `docker image prune` deletes dangling images, `-a` removes all unused images
+    - `docker volume prune` delete volumes that re not attached to containers
+    - `docker network prune` removes unused bridge networks
+
+- Docker uses `overlay2` for it's container filesystems
+    - *lowerdir*: read-only image data
+    - *upperdir*: writable data (for a container)
+    - *workdir*: scratch space for merging
+    - *merged*: final union filesystem exposed to container 
+- Garbage Collection in a registry removes unreferenced manifests, blobs not tied to tags and dangling layer data
+    - to run you must first make the registry `read-only`
+    - then run `registry garbage-collect /etc/docker/registry/config.yml` 
+    - there is no TTL for images in Docker Registry, you generally have to manually delete them. Github container Registry and ECR have lifecycles built in.
+    - 
