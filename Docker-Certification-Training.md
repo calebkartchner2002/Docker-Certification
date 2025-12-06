@@ -222,4 +222,4 @@ COPY --from=builder /src/app /app
     - this encrypts data-in-transit only between nodes
     - encryption keys are rotated automatically by Swarm
 - a docker stack is the way you deploy and run a full Swarm application using a docker compose style file
-- 
+- `overlay` is the only docker network that can you have multiple hosts
