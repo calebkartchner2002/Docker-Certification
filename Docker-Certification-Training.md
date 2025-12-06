@@ -146,4 +146,80 @@ COPY --from=builder /src/app /app
     - to run you must first make the registry `read-only`
     - then run `registry garbage-collect /etc/docker/registry/config.yml` 
     - there is no TTL for images in Docker Registry, you generally have to manually delete them. Github container Registry and ECR have lifecycles built in.
-    - 
+
+## Indepth struggle notes
+- Kubernetes
+    - A persistent volume is an actual peice of stage that the cluster admin has provisioned, or can be dynamically provisioned
+    - A persistent volume claim is a request for storage by a pod
+    - PVC's and PV have properties:
+        - `storage`: a PVC will need at least its requested storage or larger, any larger and that space will be "taken" but not used
+        - `Access Mode`: ReadWriteOnce(RWO), ReadWriteMany (RWX), ReadOnlyMany (ROX)
+        - `StorageClass`: defines the type of storage that will be used
+        - PVCs cannot shrink, only expand (if `allowVolumeExpansion: true` is set in StorageClass)
+            - exapnsion request is sent through PVC spec change 
+        - 1:1, one PVC binds to exactly one PV.
+    - if a pod creates a PVC and there is none available, dynamic provisioning may occur if
+        - The PVC specifies a StorageClass
+        - or The cluster has a default StorageClass
+    - A `StorageClass` tells Kubernetes how to create a PV dynamically
+        - The provisioner plugin (example: kubernetes.io/aws-ebs)
+        - Default reclaim policy (often Delete)
+            - Retain -> Do nothing. Admin must clean up manually
+            - Delete -> Delete the backend storage (EBS volume, GCE PD, etc.). This is common in cloud setups
+        - `volumeBindingMode` option:
+            - `Immediate`: Provision PV as soon as PVC is created
+            - `WaitForFirstConsumer`: PV isn’t provisioned until a Pod attempts to use it, this is great for cloud as it ensures the volume gets created in the right availability zone
+    - PVs are cluster-level; PVCs are namespace-level 
+    - PV lifecycle outlives Pods but NOT necessarily PVCs
+    - when a PVC is created and references a `StorageClass`, The control plane contacts the provisioner (Container Storage Interface (CSI) is the modern and recommened one) to create a real disk in a cloud provider (EBS/GCE PD/Azure Disk/etc.)
+    - `volumeMode: Filesystem` : Provisioner formats the disk (ext4/xfs/etc.) and Pod mounts it as a directory
+    - `volumeMode: Block`: Raw block device is exposed directly to the container 
+        - Not all CSI drivers support Block mode, used for databases that want to manage their own filesystem
+    - Namespaces(which are completely different in kubernetes compared to linux namespaces) do not affect IP allocation
+        - Every pod gets one IP. All containers in a pod share that single IP
+- Linux Namspaces: provide kernel-level isolation:
+     - PID, NET, MNT, UTS, IPC, USER
+- Kubernetes namespaces are organizational boundaries, folders for your API objects
+- Docker Model:
+    Node
+      └─ Container
+      └─ Container
+      └─ Container
+- Kubernetes Model:
+    Cluster
+      └─ Node
+          └─ Pod
+              └─ Container
+              └─ Container
+          └─ Pod
+              └─ Container
+- kubernetes pods contain a group of container which all share the same IP, storage, and very intertwined whereas as every docker container is independent, has its own storage, own IP, PID
+
+- A logging driver in Docker is the mechanism that decides where container logs go and how they’re stored/forwarded
+    - common drivers: `json-file`(default), `local`, `syslog`, `awslogs`, `splunk`, `none`
+    - You can configure the default logging drivers in every container (unless overriden) in `/etc/docker/daemon.json` 
+    - you can set logging driver when running a container: `docker run -d --name myapp --log-driver=json-file`
+    - or you can set the logging driver in the `docker-compose.yml` with `logging` underneath the named service
+    - A logging driver routes container `stdout/stderr` to different backends
+- In Kubernetes, Requests are made to the Universal Control Plane (UCP) API. 
+    - UCP audit logging allows you to see past requests
+    - to capture all HTTP actions (GET/POST/PUT/PATCH/DELETE) against the UCP API, Swarm API and Kubernetes API, enable: `metadata` level or  `request` level
+        - In the UI: Admin Settings -> Logs & Audit Logs -> Configure Audit Log Level
+    - Once enabled, the audit events are written into the logs of the `ucp-controller` container on each manager node
+- UCP (Universal Control Plane) is Docker Enterprise’s central management and security control plane for container clusters
+- If you use a custom CA or self-signed certificate, every Docker Engine, UCP node, and client pulling from DTR must trust that CA
+    - you must copy your CA root certificate into: `/etc/docker/certs.d/dtr.example.com/ca.crt`
+    - after putting `ca.crt` in place, you must `sudo systemctl restart docker`
+- An insecure registry is a container registry that does NOT use HTTPS (TLS) or uses a self-signed certificate that Docker does NOT trust
+    - to allow an insecure registry, add `"insecure-registries": ["myregistry:5000"]` to the `daemon.json`
+- A registry mirror is a caching proxy for Docker Hub or another upstream registry
+    - enable in `daemon.json` with `{"registry-mirrors": ["https://mirror.gcr.io"]}`
+- `docker events` is a real-time event stream from the Docker daemon. Examples:
+    - `--filter container=mycontainer`
+    - `docker events --filter event=health_status`
+- To encrypt the overlay network on docker, run `--opt encrypted` in you docker network create command
+    - this enables IPSec encryption for VXLAN packets between swarm nodes
+    - this encrypts data-in-transit only between nodes
+    - encryption keys are rotated automatically by Swarm
+- a docker stack is the way you deploy and run a full Swarm application using a docker compose style file
+- 
