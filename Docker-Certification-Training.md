@@ -157,6 +157,8 @@ COPY --from=builder /src/app /app
         - `StorageClass`: defines the type of storage that will be used
         - PVCs cannot shrink, only expand (if `allowVolumeExpansion: true` is set in StorageClass)
             - exapnsion request is sent through PVC spec change 
+            - editing the `spec.resources.requests.storage` can change the size
+            - You increase the PVC's requested storage → the PV is marked for expansion → the storage backend enlarges the underlying block device → Kubernetes updates the PV's capacity → kubelet (or the CSI node plugin) resizes the filesystem on the node → the pod sees the new larger volume
         - 1:1, one PVC binds to exactly one PV.
     - if a pod creates a PVC and there is none available, dynamic provisioning may occur if
         - The PVC specifies a StorageClass
@@ -223,3 +225,40 @@ COPY --from=builder /src/app /app
     - encryption keys are rotated automatically by Swarm
 - a docker stack is the way you deploy and run a full Swarm application using a docker compose style file
 - `overlay` is the only docker network that can you have multiple hosts
+
+## Next Struggle section
+- joining a manager and worker node is almost the same except there is a unique token for joining as each: `docker swarm join --token <worker-token> <manager-ip>:2377`
+    - you can join any manager in the swarm
+- The UCP client bundle lets you talk securely to the UCP cluster with your identity and permissions.
+- you can download the client bundle from UCP and get a ZIP file:
+    - The UCP CA certificate
+    - A client certificate and private key
+    - This entire bnudle authenticates you as your UCP user and applies the RBAC permissions assigned to you in UCP.
+    - a `.env.sh` script that sets enviorment variables
+        - `DOCKER_HOST=tcp://ucp.example.com:443`
+        - `DOCKER_TLS_VERIFY=1`
+        - `DOCKER_CERT_PATH=/path/to/this/bundle`
+- A restricted UCP user can view but cannot cahnge anything in the docker or kubernetes setup.
+- Labels are key–value pairs attached to Kubernetes objects (pods, deployments, nodes, namespaces, etc.)
+    - Set-based selectors: `kubectl get pods -l 'env in (development)'`
+    - Equality-based selectors: `-l env=development` or `-l app!=frontend`
+- DTR after completing security scans can send webhooks to other applications such as gitlab to other proccessing such as unit tests. 
+- DTR Cache is a read-only registry replica used to speed up global image distribution.
+    - user authentication is forwarded to the primary DTR
+    - Acts like a virtual load balancer.
+- kube-proxy is a node-level network proxy that maintains the rules that make Kubernetes Services work
+    - Programs NAT, iptables, IPVS rules on each node
+    - Provides load balancing between pods behind a Service
+    - Watches the API server for: New Services, Deleted Services, Updated Endpoints (pods)
+- ClusterIP is the internal virtual IP assigned to every Kubernetes Service
+    - Only reachable inside the cluster.
+    - Never tied to any pod or node.
+    - kube-proxy ensures connections to the ClusterIP get NATed to pod IPs.
+- overlay networking is applied via a CNI plugin (container network interface)
+- one namespace can talk to another but specifying its cross-namespace form:
+    - something in `dev` trying to reach a service called `api` in `test`, it must call `api.test` or `api.test.svc` or `api.test.svc.cluster.local`
+- with `-p`, you specify the port mapping. With `-P`, Docker automatically publishes all EXPOSEd ports using random high host ports
+- Priority order for docker daemon: CLI flags override, daemon.json, system/defaults
+
+- you can set insecure registries in `/etc/docker/daemon.json` as "insecure-registries": ["host:port"]
+- passing the `--insecure registry` flag to the daemon at run time is a way to configure the docker engine to use a registry without a trusted TLS certificate
