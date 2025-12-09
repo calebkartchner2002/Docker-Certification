@@ -262,3 +262,6 @@ COPY --from=builder /src/app /app
 
 - you can set insecure registries in `/etc/docker/daemon.json` as "insecure-registries": ["host:port"]
 - passing the `--insecure registry` flag to the daemon at run time is a way to configure the docker engine to use a registry without a trusted TLS certificate
+
+## Practice exam questions:
+https://www.examtopics.com/exams/mirantis/dca/view/
